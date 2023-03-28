@@ -12,6 +12,6 @@ void my_malloc_init(void);
 
 void* my_malloc(size_t size);
 
-void my_free(void* pouet);
+void my_free(void* ptr);
 
 #endif
