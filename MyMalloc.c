@@ -63,3 +63,14 @@ void* my_malloc(size_t size) {
     *(size_t*)((uintptr_t)ptr - HEADER_SIZE) = alloc_size;
     return ptr;
 }
+
+void my_free(void* ptr) {
+    if (ptr == NULL) {
+        return;
+    }
+
+    block_t* block = (block_t*)((uintptr_t)ptr - HEADER_SIZE);
+    block->size = *(size_t*)((uintptr_t)ptr - HEADER_SIZE);
+    block->next = free_list;
+    free_list = block;
+}
