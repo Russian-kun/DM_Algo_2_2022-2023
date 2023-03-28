@@ -1,6 +1,4 @@
 #include "MyMalloc.h"
-
-#include "MyMalloc.h"
 #include <stdint.h>
 
 #define POOL_SIZE 1000000000 /* 1 Giga */
