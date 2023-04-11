@@ -31,13 +31,7 @@ Particle *initParticles(int nbp);
 
 Quadtree initQuadtree(int W, int wmin);
 
-Particle *generateParticles(int nbp, Cell **lst);
-
-void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
-
-Quadtree findLeaf(Quadtree qt, Particle *p);
-
-void addParticle(Quadtree qtree, Cell *cell, int kp);
+void freeQuadtree(Quadtree qt);
 
 Particle *generateParticles(int nbp, Cell **lst);
 
