@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 
+/// @brief Structure de particule
 typedef struct _particule_t {
     int x, y;    // coordonnée y de la particule
     int vx, vy;  // vitesse en y de la particule (optionnel)
@@ -17,6 +18,7 @@ typedef struct _cell_ {
     struct _cell_ *next;  // pointeur vers la cellule suivante dans la liste
 } Cell;
 
+/// @brief Structure de nœud de quadtree
 typedef struct _noeud_ {
     struct _noeud_ *nw, *ne, *sw, *se;  // pointeur vers les nœuds fils
     int x, y;                           // coordonnées du coin supérieur gauche du nœud
@@ -29,8 +31,20 @@ Particle *initParticles(int nbp);
 
 Quadtree initQuadtree(int W, int wmin);
 
-void freeQuadtree(Quadtree qt);
+Particle *generateParticles(int nbp, Cell **lst);
 
-Particle *generateParticles(int nbp);
+void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
+
+Quadtree findLeaf(Quadtree qt, Particle *p);
+
+void addParticle(Quadtree qtree, Cell *cell, int kp);
+
+Particle *generateParticles(int nbp, Cell **lst);
+
+void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
+
+Quadtree findLeaf(Quadtree qt, Particle *p);
+
+void addParticle(Quadtree qtree, Cell *cell, int kp);
 
 #endif

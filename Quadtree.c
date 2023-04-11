@@ -74,9 +74,9 @@ Quadtree findLeaf(Quadtree qt, Particle* p) {
 }
 
 // Ajouter une particule dans la liste de cellules
-void addParticle(Quadtree qtree, Particle* p) {
-    // Trouver la feuille où insérer la particule
-    Noeud* feuille = findLeaf(qtree, p);
+void addParticle(Quadtree qtree, Cell* cell, int kp) {
+    Particle* p = cell->p;
+
     // Ajouter la particule dans la liste de cellules de la feuille
     Cell* newCell = createCell(p);
     newCell->next = feuille->plist;
