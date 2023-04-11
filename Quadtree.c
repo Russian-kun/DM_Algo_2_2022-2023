@@ -63,7 +63,6 @@ void split(Quadtree qt, int kp) {
             cell = cell->next;
             addParticle(qt->nw, tmp, kp);
             // free(tmp);
-            qt->nbp--;
         } else if (isInQuadtree(qt->ne, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -74,7 +73,6 @@ void split(Quadtree qt, int kp) {
             cell = cell->next;
             addParticle(qt->ne, tmp, kp);
             // free(tmp);
-            qt->nbp--;
         } else if (isInQuadtree(qt->sw, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -85,7 +83,6 @@ void split(Quadtree qt, int kp) {
             cell = cell->next;
             addParticle(qt->sw, tmp, kp);
             // free(tmp);
-            qt->nbp--;
         } else if (isInQuadtree(qt->se, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -96,7 +93,6 @@ void split(Quadtree qt, int kp) {
             cell = cell->next;
             addParticle(qt->se, tmp, kp);
             // free(tmp);
-            qt->nbp--;
         } else {
             prev = cell;
             cell = cell->next;

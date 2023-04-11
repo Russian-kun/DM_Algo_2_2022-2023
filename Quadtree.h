@@ -23,7 +23,7 @@ typedef struct _noeud_ {
     struct _noeud_ *nw, *ne, *sw, *se;  // pointeur vers les nœuds fils
     int x, y;                           // coordonnées du coin supérieur gauche du nœud
     int width, height;                  // Dimensions du nœud
-    int nbp;                            // nombre de particules dans le nœud
+    int nbp;                            // nombre de particules dans le nœud et ses fils
     Cell *plist;                        // pointeur vers la liste chaînée de particules dans le nœud (NULL si nœud interne)
 } Noeud, *TasNoeuds, *Quadtree;
 
