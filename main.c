@@ -5,8 +5,8 @@
 // TODO placement a la souris (loop click, menu avec option de generation, touche pour quitter)
 int main(int argc, char* argv[]) {
     int puis = 9;
-    int W = pow(2, puis), wmin = 8, kp = 10;
-    int nbp = 1000;
+    int W = pow(2, puis), wmin = 2, kp = 2;
+    int nbp = 200;
     Cell* lstCell = NULL;
     srand(time(NULL));
     Quadtree qt = initQuadtree(W, wmin);

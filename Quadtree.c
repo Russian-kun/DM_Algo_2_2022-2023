@@ -191,11 +191,9 @@ void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
 }
 
 Quadtree initQuadtree(int W, int wmin) {
-    // Calcul de la hauteur h du QuadTree
-    // int h = log2(W);
-
     // Allocation du tableau de noeuds
-    int nbNodes = W * W * 4;
+    // int tmp = pow(4, log2(W));
+    int nbNodes = pow(4, log2(W) + 1);  // W * W * 4;
     Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
 
     // Initialisation de la racine
