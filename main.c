@@ -2,6 +2,7 @@
 #include "affichage.h"
 #include <time.h>
 
+// TODO placement a la souris (loop click, menu avec option de generation, touche pour quitter)
 int main(int argc, char* argv[]) {
     int puis = 9;
     int W = pow(2, puis), wmin = 8, kp = 10;
