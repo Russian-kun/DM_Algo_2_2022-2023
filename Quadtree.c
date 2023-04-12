@@ -62,7 +62,6 @@ void split(Quadtree qt, int kp) {
             }
             cell = cell->next;
             addParticle(qt->nw, tmp, kp);
-            // free(tmp);
         } else if (isInQuadtree(qt->ne, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -72,7 +71,6 @@ void split(Quadtree qt, int kp) {
             }
             cell = cell->next;
             addParticle(qt->ne, tmp, kp);
-            // free(tmp);
         } else if (isInQuadtree(qt->sw, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -82,7 +80,6 @@ void split(Quadtree qt, int kp) {
             }
             cell = cell->next;
             addParticle(qt->sw, tmp, kp);
-            // free(tmp);
         } else if (isInQuadtree(qt->se, cell->p)) {
             Cell* tmp = cell;
             if (prev == NULL) {
@@ -92,7 +89,6 @@ void split(Quadtree qt, int kp) {
             }
             cell = cell->next;
             addParticle(qt->se, tmp, kp);
-            // free(tmp);
         } else {
             if (qt->nw != NULL) {
                 fprintf(stderr, "\nErreur: Particule non répartie dans le quadtree\n");
@@ -183,9 +179,7 @@ Quadtree initQuadtree(int W, int wmin) {
     // int h = log2(W);
 
     // Allocation du tableau de noeuds
-    // int nbNodes = (int)pow(4, h);
     int nbNodes = W * W * 4;
-    // int nbNodes = h;
     Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
 
     // Initialisation de la racine
