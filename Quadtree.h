@@ -9,7 +9,7 @@
 /// @brief Structure de particule
 typedef struct _particule_t {
     int x, y;    // coordonnée y de la particule
-    int vx, vy;  // vitesse en y de la particule (optionnel)
+    int vx, vy;  // vitesse en y de la particule
 } Particle;
 
 /// @brief Structure de cellule de liste chaînée
@@ -33,7 +33,7 @@ Quadtree initQuadtree(int W, int wmin);
 
 void freeQuadtree(Quadtree qt);
 
-Particle *generateParticles(int nbp, Cell **lst);
+Particle *generateParticles(int nbp, Cell **lst, int W);
 
 void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
 

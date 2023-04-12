@@ -3,12 +3,13 @@
 #include <time.h>
 
 int main(int argc, char* argv[]) {
-    int W = 512, wmin = 10, kp = 100;
-    int nbp = 500;
+    int puis = 9;
+    int W = pow(2, puis), wmin = 8, kp = 10;
+    int nbp = 200;
     Cell* lstCell = NULL;
-    srand(time(NULL));
+    // srand(time(NULL));
     Quadtree qd = initQuadtree(W, wmin);
-    Particle* p = generateParticles(nbp, &lstCell);
+    Particle* p = generateParticles(nbp, &lstCell, W);
     addParticlesQuadtree(qd, p, lstCell, nbp, kp);
 
     MLV_create_window("Quadtree", "Quadtree", W, W);

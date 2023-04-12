@@ -2,12 +2,19 @@
 
 void afficherQuadtreeRec(Quadtree qt, int W, int wmin) {
     if (qt == NULL) return;
-    if (qt->height < wmin) {
+    if (qt->height < wmin && qt->plist != NULL) {
         MLV_draw_rectangle(qt->x, qt->y, qt->height, qt->height, MLV_COLOR_RED);
+        // MLV_actualise_window();
         return;
     }
-    if (qt->nbp != 0)
+    if (qt->plist != NULL) {
         MLV_draw_rectangle(qt->x, qt->y, qt->height, qt->height, MLV_COLOR_WHITE);
+        // MLV_actualise_window();
+        if (qt->nbp > 10) {
+            fprintf(stderr, "\nErreur: Tentative d'affichage d'un noeud avec plus de 10 particules\nnbp: %d", qt->nbp);
+        }
+        // return;
+    }
     afficherQuadtreeRec(qt->nw, W, wmin);
     afficherQuadtreeRec(qt->ne, W, wmin);
     afficherQuadtreeRec(qt->sw, W, wmin);

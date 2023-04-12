@@ -94,29 +94,31 @@ void split(Quadtree qt, int kp) {
             addParticle(qt->se, tmp, kp);
             // free(tmp);
         } else {
+            fprintf(stderr, "\nErreur: Particule non répartie dans le quadtree\n");
+            fprintf(stderr, "x: %d, y: %d\n", cell->p->x, cell->p->y);
+            fprintf(stderr, "Quadtree: x: %d, y: %d, width: %d, height: %d\n", qt->x, qt->y, qt->width, qt->height);
             prev = cell;
             cell = cell->next;
-            break;
         }
     }
 }
 
 // Ajouter une particule dans la liste de cellules
 void addParticle(Quadtree qtree, Cell* cell, int kp) {
-    Particle* p = cell->p;
-
     // Ajouter la particule dans la liste de cellules de la feuille
+    int dispatch = !isLeaf(qtree);  // Si le noeud n'est pas une feuille, on doit répartir les particules
     Cell* newCell = cell;
     newCell->next = qtree->plist;
     qtree->plist = newCell;
     qtree->nbp++;
-    if (sature(qtree, kp)) {
+    if (sature(qtree, kp) || dispatch) {
         // Si la feuille est saturée, on la divise
         split(qtree, kp);
     }
 }
 
-void initQuadtreeRec(Noeud* node, int wmin, int niveau) {
+// FIXME Tas bugge, fils pas au bon endroit
+void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
     // Si la résolution minimale est atteinte, on arrête la récursion
     if (node->width <= wmin) {
         return;
@@ -126,54 +128,57 @@ void initQuadtreeRec(Noeud* node, int wmin, int niveau) {
     int x = node->x;
     int y = node->y;
     int width = node->width / 2;
-    int height = node->height / 2;
+    int height = width;
 
+    int dir = (position + 3) % 4 + 1;
+    int pos_premier_frere = position - dir;
+    int nb_fils = pow(4, niveau + 1);
+    int new_pos = position * 4 + dir;
+    if (niveau == 0) {
+        new_pos = 1;
+    }
     // Initialisation des fils nord-ouest, nord-est, sud-ouest et sud-est
-    Noeud* nw = &node[(int)pow(4, niveau) + 1];
-    nw->x = x;
-    nw->y = y;
-    nw->width = width;
-    nw->height = height;
-    nw->nbp = 0;
-    initQuadtreeRec(nw, wmin, niveau + 1);
+    node->nw = &node[new_pos];
+    node->nw->x = x;
+    node->nw->y = y;
+    node->nw->width = width;
+    node->nw->height = height;
+    node->nw->nbp = 0;
+    initQuadtreeRec(node->nw, wmin, niveau + 1, new_pos);
 
-    Noeud* ne = nw + 1;  // &node[pow(4, niveau) + 1];
-    ne->x = x + width;
-    ne->y = y;
-    ne->width = width;
-    ne->height = height;
-    ne->nbp = 0;
-    initQuadtreeRec(ne, wmin, niveau + 1);
+    node->ne = node->nw + 1;
+    node->ne->x = x + width;
+    node->ne->y = y;
+    node->ne->width = width;
+    node->ne->height = height;
+    node->ne->nbp = 0;
+    initQuadtreeRec(node->ne, wmin, niveau + 1, new_pos + 1);
 
-    Noeud* sw = ne + 1;  // &node[pow(4, niveau) + 2]
-    sw->x = x;
-    sw->y = y + height;
-    sw->width = width;
-    sw->height = height;
-    sw->nbp = 0;
-    initQuadtreeRec(sw, wmin, niveau + 1);
+    node->sw = node->ne + 1;
+    node->sw->x = x;
+    node->sw->y = y + height;
+    node->sw->width = width;
+    node->sw->height = height;
+    node->sw->nbp = 0;
+    initQuadtreeRec(node->sw, wmin, niveau + 1, new_pos + 2);
 
-    Noeud* se = sw + 1;  // &node[pow(4, niveau) + 3]
-    se->x = x + width;
-    se->y = y + height;
-    se->width = width;
-    se->height = height;
-    se->nbp = 0;
-    initQuadtreeRec(se, wmin, niveau + 1);
-
-    // Initialisation des pointeurs vers les fils
-    node->nw = nw;
-    node->ne = ne;
-    node->sw = sw;
-    node->se = se;
+    node->se = node->sw + 1;
+    node->se->x = x + width;
+    node->se->y = y + height;
+    node->se->width = width;
+    node->se->height = height;
+    node->se->nbp = 0;
+    initQuadtreeRec(node->se, wmin, niveau + 1, new_pos + 3);
 }
 
 Quadtree initQuadtree(int W, int wmin) {
     // Calcul de la hauteur h du QuadTree
-    int h = log2(W);
+    // int h = log2(W);
 
     // Allocation du tableau de noeuds
-    int nbNodes = (int)pow(4, h + 1) / 3;
+    // int nbNodes = (int)pow(4, h);
+    int nbNodes = W * W * 4;
+    // int nbNodes = h;
     Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
 
     // Initialisation de la racine
@@ -186,7 +191,7 @@ Quadtree initQuadtree(int W, int wmin) {
     root->plist = NULL;
 
     // Initialisation récursive des fils
-    initQuadtreeRec(root, wmin, 0);
+    initQuadtreeRec(root, wmin, 0, 1);
 
     return quadtree;
 }
@@ -195,12 +200,12 @@ void freeQuadtree(Quadtree qt) {
     free(qt);
 }
 
-Particle* generateParticles(int nbp, Cell** cell) {
+Particle* generateParticles(int nbp, Cell** cell, int W) {
     Particle* particules = (Particle*)malloc(nbp * sizeof(Particle));
     *cell = calloc(nbp, sizeof(Cell));
     for (int i = 0; i < nbp; i++) {
-        int x = rand() % 512;
-        int y = rand() % 512;
+        int x = rand() % W;
+        int y = rand() % W;
         particules[i] = (Particle){x, y, 0, 0};
         (*cell)[i] = (Cell){&particules[i], NULL};
     }
