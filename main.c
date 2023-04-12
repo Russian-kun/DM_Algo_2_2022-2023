@@ -5,19 +5,19 @@
 int main(int argc, char* argv[]) {
     int puis = 9;
     int W = pow(2, puis), wmin = 8, kp = 10;
-    int nbp = 200;
+    int nbp = 1000;
     Cell* lstCell = NULL;
-    // srand(time(NULL));
-    Quadtree qd = initQuadtree(W, wmin);
+    srand(time(NULL));
+    Quadtree qt = initQuadtree(W, wmin);
     Particle* p = generateParticles(nbp, &lstCell, W);
-    addParticlesQuadtree(qd, p, lstCell, nbp, kp);
+    addParticlesQuadtree(qt, p, lstCell, nbp, kp);
 
     MLV_create_window("Quadtree", "Quadtree", W, W);
     MLV_clear_window(MLV_COLOR_BLACK);
     for (int i = 0; i < nbp; i++) {
         afficherParticle(&p[i]);
     }
-    afficherQuadtree(qd, W, wmin);
+    afficherQuadtree(qt, W, wmin);
 
     MLV_actualise_window();
     MLV_update_window();
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
     MLV_free_window();
 
-    freeQuadtree(qd);
+    freeQuadtree(qt);
     free(p);
     free(lstCell);
     return 0;
