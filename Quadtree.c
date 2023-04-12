@@ -48,7 +48,7 @@ int isInQuadtree(Quadtree qt, Particle* p) {
  *
  */
 void split(Quadtree qt, int kp) {
-    if (qt->height == 1 && qt->width == 1)
+    if (qt->nw == NULL || qt->ne == NULL || qt->sw == NULL || qt->se == NULL)
         return;
     Cell* cell = qt->plist;
     Cell* prev = NULL;
@@ -94,9 +94,11 @@ void split(Quadtree qt, int kp) {
             addParticle(qt->se, tmp, kp);
             // free(tmp);
         } else {
-            fprintf(stderr, "\nErreur: Particule non répartie dans le quadtree\n");
-            fprintf(stderr, "x: %d, y: %d\n", cell->p->x, cell->p->y);
-            fprintf(stderr, "Quadtree: x: %d, y: %d, width: %d, height: %d\n", qt->x, qt->y, qt->width, qt->height);
+            if (qt->nw != NULL) {
+                fprintf(stderr, "\nErreur: Particule non répartie dans le quadtree\n");
+                fprintf(stderr, "x: %d, y: %d\n", cell->p->x, cell->p->y);
+                fprintf(stderr, "Quadtree: x: %d, y: %d, width: %d, height: %d\n", qt->x, qt->y, qt->width, qt->height);
+            }
             prev = cell;
             cell = cell->next;
         }
@@ -104,16 +106,15 @@ void split(Quadtree qt, int kp) {
 }
 
 // Ajouter une particule dans la liste de cellules
-void addParticle(Quadtree qtree, Cell* cell, int kp) {
+void addParticle(Quadtree qt, Cell* cell, int kp) {
     // Ajouter la particule dans la liste de cellules de la feuille
-    int dispatch = !isLeaf(qtree);  // Si le noeud n'est pas une feuille, on doit répartir les particules
     Cell* newCell = cell;
-    newCell->next = qtree->plist;
-    qtree->plist = newCell;
-    qtree->nbp++;
-    if (sature(qtree, kp) || dispatch) {
+    newCell->next = qt->plist;
+    qt->plist = newCell;
+    qt->nbp++;
+    if (sature(qt, kp)) {
         // Si la feuille est saturée, on la divise
-        split(qtree, kp);
+        split(qt, kp);
     }
 }
 
@@ -129,14 +130,21 @@ void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
     int y = node->y;
     int width = node->width / 2;
     int height = width;
+    // Position correspond a la position du pere
 
-    int dir = (position + 3) % 4 + 1;
-    int pos_premier_frere = position - dir;
-    int nb_fils = pow(4, niveau + 1);
-    int new_pos = position * 4 + dir;
-    if (niveau == 0) {
-        new_pos = 1;
-    }
+    // Calcul du nombre de frères
+    int nb_frere = pow(4, niveau);
+    // Calcul de la position du premier fils
+    int pos_premier_fils = nb_frere * 4 / 3;
+    // Calcul de la position du premier frère
+    int pos_premier_frere = nb_frere / 3;
+    // Calcul de la position du frère
+    int distance_frere = position - pos_premier_frere;
+
+    int pos_actuelle = pos_premier_fils + distance_frere * 4;
+
+    int new_pos = pos_actuelle;
+
     // Initialisation des fils nord-ouest, nord-est, sud-ouest et sud-est
     node->nw = &node[new_pos];
     node->nw->x = x;
@@ -214,9 +222,7 @@ Particle* generateParticles(int nbp, Cell** cell, int W) {
 
 void addParticlesQuadtree(Quadtree qt, Particle* p, Cell* cell, int nbp, int kp) {
     int i;
-    qt->plist = &cell[0];
-    qt->nbp++;
-    for (i = 1; i < nbp; i++) {
+    for (i = 0; i < nbp; i++) {
         addParticle(qt, &cell[i], kp);
     }
 }
