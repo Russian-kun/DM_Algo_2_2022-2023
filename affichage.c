@@ -1,5 +1,13 @@
 #include "affichage.h"
 
+/**
+ * @brief Sous-fonction récursive d'affichage d'un quadtree
+ * Affiche les noeuds de la quadtree en fonction du nombre de particules qu'ils contiennent
+ *
+ * @param qt
+ * @param W
+ * @param wmin
+ */
 void afficherQuadtreeRec(Quadtree qt, int W, int wmin) {
     if (qt == NULL) return;
     if (qt->height < wmin && qt->plist != NULL) {
@@ -24,6 +32,6 @@ void afficherQuadtree(Quadtree qt, int W, int wmin) {
     afficherQuadtreeRec(qt, W, wmin);
 }
 
-void afficherParticle(Particle* p) {
-    MLV_draw_filled_circle(p->x, p->y, 1, MLV_COLOR_BLUE);
+void afficherParticle(Particle p) {
+    MLV_draw_filled_circle(p.x, p.y, 1, MLV_COLOR_BLUE);
 }

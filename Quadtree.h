@@ -27,18 +27,51 @@ typedef struct _noeud_ {
     Cell *plist;                        // pointeur vers la liste chaînée de particules dans le nœud (NULL si nœud interne)
 } Noeud, *TasNoeuds, *Quadtree;
 
-Particle *initParticles(int nbp);
-
+/**
+ * @brief Initialise un quadtree
+ *
+ * @param W Cote du carre
+ * @param wmin Taille minimale des feuilles
+ * @return Quadtree
+ */
 Quadtree initQuadtree(int W, int wmin);
 
+/**
+ * @brief Libère la mémoire allouée pour un quadtree
+ *
+ * @param qt Quadtree
+ */
 void freeQuadtree(Quadtree qt);
 
+/**
+ * @brief Génère un tableau de particule ainsi que les cellule d'une
+ * liste chaînée de particules
+ *
+ * @param nbp Nombre de particules
+ * @param lst Pointeur vers la liste chaînée de cellules
+ * @param W Cote du carre
+ * @return Particle*
+ */
 Particle *generateParticles(int nbp, Cell **lst, int W);
 
+/**
+ * @brief Ajoute des particules dans un quadtree
+ *
+ * @param qt Quadtree
+ * @param p Tableau de particules
+ * @param cell Tableau de cellules
+ * @param nbp Nombre de particules
+ * @param kp Nombre maximal de particules dans une feuille
+ */
 void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
 
-Quadtree findLeaf(Quadtree qt, Particle *p);
-
+/**
+ * @brief Ajoute une particule dans un quadtree
+ *
+ * @param qtree
+ * @param cell
+ * @param kp
+ */
 void addParticle(Quadtree qtree, Cell *cell, int kp);
 
 #endif

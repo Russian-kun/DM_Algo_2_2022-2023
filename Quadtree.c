@@ -1,28 +1,22 @@
 #include "Quadtree.h"
 
-Particle* allouerParticle(int x, int y, int vx, int vy) {
-    Particle* p = (Particle*)malloc(sizeof(Particle));
-    p->x = x;
-    p->y = y;
-    p->vx = vx;
-    p->vy = vy;
-    return p;
-}
-
-Particle* initParticles(int nbp) {
-    Particle* particules = (Particle*)malloc(nbp * sizeof(Particle));
-    for (int i = 0; i < nbp; i++) {
-        int x = rand() % 512;
-        int y = rand() % 512;
-        particules[i] = *allouerParticle(x, y, 0, 0);
-    }
-    return particules;
-}
-
+/**
+ * @brief Verifie si un quadtree est une feuille
+ *
+ * @param qt
+ * @return int
+ */
 int isLeaf(Quadtree qt) {
     return qt->plist != NULL;
 }
 
+/**
+ * @brief Verifie si une particule est dans la liste chaînée d'un quadtree
+ *
+ * @param qt
+ * @param p
+ * @return int
+ */
 int isInPlist(Quadtree qt, Particle* p) {
     Cell* cell = qt->plist;
     while (cell != NULL) {
@@ -34,10 +28,25 @@ int isInPlist(Quadtree qt, Particle* p) {
     return 0;
 }
 
+/**
+ * @brief Verifie si un quadtree est plein
+ *
+ * @param qt
+ * @param kp
+ * @return int
+ */
 int sature(Quadtree qt, int kp) {
     return qt->nbp >= kp;
 }
 
+/**
+ * @brief Verifie si une particule est comprise dans
+ * les dimensions d'un quadtree
+ *
+ * @param qt
+ * @param p
+ * @return int
+ */
 int isInQuadtree(Quadtree qt, Particle* p) {
     if (qt == NULL) return 0;
     return p->x >= qt->x && p->x < qt->x + qt->width && p->y >= qt->y && p->y < qt->y + qt->height;
@@ -101,7 +110,6 @@ void split(Quadtree qt, int kp) {
     }
 }
 
-// Ajouter une particule dans la liste de cellules
 void addParticle(Quadtree qt, Cell* cell, int kp) {
     // Ajouter la particule dans la liste de cellules de la feuille
     Cell* newCell = cell;
@@ -114,6 +122,14 @@ void addParticle(Quadtree qt, Cell* cell, int kp) {
     }
 }
 
+/**
+ * @brief Sous-fonction de initQuadtree
+ *
+ * @param node Pointeur vers le nœud courant
+ * @param wmin Résolution minimale
+ * @param niveau Niveau courant
+ * @param position Position du nœud courant
+ */
 void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
     // Si la résolution minimale est atteinte, on arrête la récursion
     if (node->width <= wmin) {

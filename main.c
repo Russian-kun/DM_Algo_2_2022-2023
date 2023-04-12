@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
     MLV_create_window("Quadtree", "Quadtree", W, W);
     MLV_clear_window(MLV_COLOR_BLACK);
     for (int i = 0; i < nbp; i++) {
-        afficherParticle(&p[i]);
+        afficherParticle(p[i]);
     }
     afficherQuadtree(qt, W, wmin);
 
