@@ -118,7 +118,6 @@ void addParticle(Quadtree qt, Cell* cell, int kp) {
     }
 }
 
-// FIXME Tas bugge, fils pas au bon endroit
 void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
     // Si la résolution minimale est atteinte, on arrête la récursion
     if (node->width <= wmin) {
