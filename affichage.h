@@ -20,4 +20,8 @@ void afficherQuadtree(Quadtree qt, int W, int wmin);
  */
 void afficherParticle(Particle p);
 
+void afficherMenu(int choix, int X, int Y);
+
+int clicMenu(int x, int y);
+
 #endif

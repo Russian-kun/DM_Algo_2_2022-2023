@@ -35,3 +35,49 @@ void afficherQuadtree(Quadtree qt, int W, int wmin) {
 void afficherParticle(Particle p) {
     MLV_draw_filled_circle(p.x, p.y, 1, MLV_COLOR_BLUE);
 }
+
+void MLV_draw_text_box_centered(int x, int y, int width, int height, const char* text, int size_interligne, MLV_Color border_color, MLV_Color text_color, MLV_Color background_color, MLV_Text_justification text_justification, MLV_Horizontal_position horizontal_position, MLV_Vertical_position vertical_position) {
+    MLV_draw_text_box(x - width / 2, y - height / 2, width, height, text, size_interligne, border_color, text_color, background_color, text_justification, horizontal_position, vertical_position);
+}
+
+/**
+ * @brief Affiche le menu centree dans la fenetre
+ * Pour l'instant, il n'y a que le placement des particules
+ * en automatique ou manuel
+ *
+ * @param choix
+ * @param X
+ * @param Y
+ */
+void afficherMenu(int choix, int X, int Y) {
+    char* text[2] = {"Placement Manuel", "Placement Automatique"};
+    int center[2] = {X / 2, Y / 2};
+    MLV_draw_text_box_centered(center[0], center[1] - 50, 200, 50, text[choix], 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+    MLV_draw_text_box_centered(center[0], center[1] + 50, 200, 50, "Lancer", 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+    MLV_draw_text_box_centered(center[0], center[1] + 150, 200, 50, "Quitter", 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+}
+
+/**
+ * @brief Renvoie le choix du menu en fonction du clic
+ *
+ * @param x
+ * @param y
+ * @return int
+ */
+int clicMenu(int x, int y) {
+    int X = MLV_get_window_width();
+    int Y = MLV_get_window_height();
+    int center[2] = {X / 2, Y / 2};
+    if (x > center[0] - 100 && x < center[0] + 100) {
+        if (y > center[1] - 100 && y < center[1] - 50) {
+            return 2;
+        }
+        if (y > center[1] && y < center[1] + 50) {
+            return 1;
+        }
+        if (y > center[1] + 100 && y < center[1] + 150) {
+            return 3;
+        }
+    }
+    return 0;
+}
