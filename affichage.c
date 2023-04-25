@@ -9,7 +9,7 @@
  * @param wmin
  */
 void afficherQuadtreeRec(Quadtree qt, int W, int wmin) {
-    if (qt == NULL) return;
+    if (qt == NULL || qt->nbp == 0) return;
     if (qt->height < wmin && qt->plist != NULL) {
         MLV_draw_rectangle(qt->x, qt->y, qt->height, qt->height, MLV_COLOR_RED);
         return;
@@ -17,6 +17,7 @@ void afficherQuadtreeRec(Quadtree qt, int W, int wmin) {
     if (qt->plist != NULL) {
         MLV_draw_rectangle(qt->x, qt->y, qt->height, qt->height, MLV_COLOR_WHITE);
         MLV_draw_filled_rectangle(qt->x, qt->y, qt->height, qt->height, MLV_rgba(150 + 12 * qt->nbp, 50, 100 + 15 * qt->nbp, 60));
+        MLV_actualise_window();
         if (qt->nbp > 10) {
             fprintf(stderr, "\nErreur: Tentative d'affichage d'un noeud avec plus de 10 particules\nnbp: %d", qt->nbp);
         }
@@ -75,7 +76,7 @@ int clicMenu(int x, int y) {
         if (y > center[1] + 50 && y < center[1] + 100) {
             return 1;
         }
-        if (y > center[1] + 150 && y < center[1] + 100) {
+        if (y > center[1] + 150 && y < center[1] + 200) {
             return 3;
         }
     }
