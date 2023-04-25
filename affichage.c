@@ -5,9 +5,9 @@
  * @brief Sous-fonction récursive d'affichage d'un quadtree
  * Affiche les noeuds de la quadtree en fonction du nombre de particules qu'ils contiennent
  *
- * @param qt
- * @param W
- * @param wmin
+ * @param qt Pointeur vers le nœud courant
+ * @param W Largeur de la fenetre
+ * @param wmin Largeur minimale d'un nœud
  */
 void afficherQuadtreeRec(Quadtree qt, int W, int wmin) {
     if (qt == NULL || qt->nbp == 0) return;
@@ -38,19 +38,26 @@ void afficherParticle(Particle p) {
     MLV_draw_filled_circle(p.x, p.y, 1, MLV_COLOR_BLUE);
 }
 
+/**
+ * @brief Macro pour dessiner un texte centré sur un point
+ *
+ * @param x Coordonnée x du point
+ * @param y Coordonnée y du point
+ * @param width Largeur de la boite
+ * @param height Hauteur de la boite
+ * @param text Texte à afficher
+ * @param size_interligne Taille de l'interligne
+ * @param border_color Couleur de la bordure
+ * @param text_color Couleur du texte
+ * @param background_color Couleur du fond
+ * @param text_justification Justification du texte
+ * @param horizontal_position Positionnement horizontal
+ * @param vertical_position Positionnement vertical
+ */
 void MLV_draw_text_box_centered(int x, int y, int width, int height, const char* text, int size_interligne, MLV_Color border_color, MLV_Color text_color, MLV_Color background_color, MLV_Text_justification text_justification, MLV_Horizontal_position horizontal_position, MLV_Vertical_position vertical_position) {
     MLV_draw_text_box(x - width / 2, y - height / 2, width, height, text, size_interligne, border_color, text_color, background_color, text_justification, horizontal_position, vertical_position);
 }
 
-/**
- * @brief Affiche le menu centree dans la fenetre
- * Pour l'instant, il n'y a que le placement des particules
- * en automatique ou manuel
- *
- * @param choix
- * @param X
- * @param Y
- */
 void afficherMenu(int choix, int X, int Y) {
     char* text[2] = {"Placement Manuel", "Placement Automatique"};
     int center[2] = {X / 2, Y / 2};
@@ -59,13 +66,6 @@ void afficherMenu(int choix, int X, int Y) {
     MLV_draw_text_box_centered(center[0], center[1] + 150, 200, 50, "Quitter", 0, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
 }
 
-/**
- * @brief Renvoie le choix du menu en fonction du clic
- *
- * @param x
- * @param y
- * @return int
- */
 int clicMenu(int x, int y) {
     int X = MLV_get_window_width();
     int Y = MLV_get_window_height();

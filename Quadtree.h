@@ -41,11 +41,11 @@ void addParticlesQuadtree(Quadtree qt, Cell *cell, int nbp, int kp);
 /**
  * @brief Ajoute une particule dans un quadtree
  *
- * @param qtree Quadtree
+ * @param qt Quadtree
  * @param cell Cellule à ajouter
  * @param kp Nombre maximal de particules dans une feuille
  */
-void addParticle(Quadtree qtree, Cell *cell, int kp);
+void addParticle(Quadtree qt, Cell *cell, int kp);
 
 // Quadtree *FindContainingQuadtree(Quadtree *qt, Cell *cellule);
 

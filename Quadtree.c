@@ -100,8 +100,8 @@ void freeQuadtree(Quadtree qt) {
 /**
  * @brief Verifie si un quadtree est plein
  *
- * @param qt
- * @param kp
+ * @param qt Pointeur vers le nœud courant
+ * @param kp Nombre de particules maximum par nœud
  * @return int
  */
 int sature(Quadtree qt, int kp) {
@@ -112,8 +112,8 @@ int sature(Quadtree qt, int kp) {
  * @brief Verifie si une particule est comprise dans
  * les dimensions d'un quadtree
  *
- * @param qt
- * @param p
+ * @param qt Pointeur vers le nœud courant
+ * @param p Pointeur vers la particule
  * @return int
  */
 int isInQuadtree(Quadtree qt, Particle* p) {
@@ -124,6 +124,8 @@ int isInQuadtree(Quadtree qt, Particle* p) {
 /**
  * @brief Distribue les particules d'une liste chaînée dans les fils d'un nœud
  *
+ * @param qt Pointeur vers le nœud courant
+ * @param kp Nombre de particules maximum par nœud
  */
 void split(Quadtree qt, int kp) {
     if (qt->nw == NULL || qt->ne == NULL || qt->sw == NULL || qt->se == NULL)
@@ -182,13 +184,6 @@ void split(Quadtree qt, int kp) {
     }
 }
 
-/**
- * @brief Ajoute une particule dans un quadtree
- *
- * @param qt
- * @param cell
- * @param kp
- */
 void addParticle(Quadtree qt, Cell* cell, int kp) {
     // Ajouter la particule dans la liste de cellules de la feuille
     Cell* newCell = cell;
@@ -223,15 +218,6 @@ int isInPlist(Quadtree qt, Cell* cellule) {
     return 0;
 }
 
-/**
- * @brief Ajoute un tableau de particules dans un quadtree
- *
- * @param qt
- * @param p
- * @param cell
- * @param nbp
- * @param kp
- */
 void addParticlesQuadtree(Quadtree qt, Cell* cell, int nbp, int kp) {
     int i;
     for (i = 0; i < nbp; i++) {
