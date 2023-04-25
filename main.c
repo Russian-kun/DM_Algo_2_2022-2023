@@ -4,9 +4,11 @@
 #include <time.h>
 #include <math.h>
 
-// TODO placement a la souris (loop click, menu avec option de generation, touche pour quitter)
 int main(int argc, char* argv[]) {
-    int ret = 0, placement = 0, clicx, clicy;
+    int ret = 0, placement = 0;
+    int clicx, clicy;
+    // Nombre de particules
+    int nbp = 200;
     int puis = 9;
     int W = pow(2, puis), wmin = 2, kp = 2;
     MLV_create_window("Quadtree", "Quadtree", W, W);
@@ -32,7 +34,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    int nbp = 200;
+    // Tableau de cellules
     Cell* lstCell = NULL;
     srand(time(NULL));
     Quadtree qt = initQuadtree(W, wmin);

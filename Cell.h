@@ -24,6 +24,12 @@ typedef struct _cell_ {
  */
 Particle *generateParticles(int nbp, Cell **lst, int W);
 
+/**
+ * @brief Recupère la dernière cellule d'une liste chaînée
+ *
+ * @param cell
+ * @return Cell*
+ */
 Cell *getLastCell(Cell *cell);
 
 #endif

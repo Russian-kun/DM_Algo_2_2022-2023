@@ -75,7 +75,6 @@ void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
 
 Quadtree initQuadtree(int W, int wmin) {
     // Allocation du tableau de noeuds
-    // int tmp = pow(4, log2(W));
     int nbNodes = pow(4, log2(W) + 1);  // W * W * 4;
     Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
 
@@ -132,14 +131,17 @@ void split(Quadtree qt, int kp) {
     Cell* cell = qt->plist;
     Cell* prev = NULL;
     while (cell != NULL) {
+        // On vérifie si la particule est dans chacun des fils
         if (isInQuadtree(qt->nw, cell->p)) {
             Cell* tmp = cell;
+            // On supprime la cellule de la liste chaînée
             if (prev == NULL) {
                 qt->plist = cell->next;
             } else {
                 prev->next = cell->next;
             }
             cell = cell->next;
+            // On ajoute la particule dans le fils correspondant
             addParticle(qt->nw, tmp, kp);
         } else if (isInQuadtree(qt->ne, cell->p)) {
             Cell* tmp = cell;
@@ -213,7 +215,7 @@ int isInPlist(Quadtree qt, Cell* cellule) {
             return 1;
         }
         if (cell == cell->next) {
-            printf("erreur de chainage : cell == cell->next\n");
+            printf("Erreur de chainage : cell == cell->next\n");
             return 1;
         }
         cell = cell->next;
@@ -242,6 +244,7 @@ int RemoveFromQuadtree(Quadtree* qt, Cell* cellule) {
     Cell* prev = NULL;
     while (cell != NULL) {
         if (cell == cellule) {
+            // On supprime la cellule de la liste chaînée
             if (prev == NULL) {
                 (*qt)->plist = cell->next;
             } else {
@@ -346,11 +349,14 @@ void FusionneFeuilles(Quadtree* qt, Cell* cellule, int kp) {
     for (i = 0; i < 4; i++) {
         if ((*fils[i])->nbp == 0)
             continue;
+
         Cell* last = getLastCell((*qt)->plist);
+        // On ajoute la liste chaînée de la feuille au père
         if (last != NULL)
             last->next = (*fils[i])->plist;
         else
             (*qt)->plist = (*fils[i])->plist;
+        // On supprime la liste chaînée de la feuille
         (*fils[i])->plist = NULL;
         (*fils[i])->nbp = 0;
     }
