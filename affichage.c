@@ -52,9 +52,9 @@ void MLV_draw_text_box_centered(int x, int y, int width, int height, const char*
 void afficherMenu(int choix, int X, int Y) {
     char* text[2] = {"Placement Manuel", "Placement Automatique"};
     int center[2] = {X / 2, Y / 2};
-    MLV_draw_text_box_centered(center[0], center[1] - 50, 200, 50, text[choix], 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
-    MLV_draw_text_box_centered(center[0], center[1] + 50, 200, 50, "Lancer", 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
-    MLV_draw_text_box_centered(center[0], center[1] + 150, 200, 50, "Quitter", 0, MLV_COLOR_BLACK, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+    MLV_draw_text_box_centered(center[0], center[1] - 50, 200, 50, text[choix], 0, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+    MLV_draw_text_box_centered(center[0], center[1] + 50, 200, 50, "Lancer", 0, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+    MLV_draw_text_box_centered(center[0], center[1] + 150, 200, 50, "Quitter", 0, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_COLOR_BLACK, MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
 }
 
 /**
@@ -69,13 +69,13 @@ int clicMenu(int x, int y) {
     int Y = MLV_get_window_height();
     int center[2] = {X / 2, Y / 2};
     if (x > center[0] - 100 && x < center[0] + 100) {
-        if (y > center[1] - 100 && y < center[1] - 50) {
+        if (y > center[1] - 50 && y < center[1]) {
             return 2;
         }
-        if (y > center[1] && y < center[1] + 50) {
+        if (y > center[1] + 50 && y < center[1] + 100) {
             return 1;
         }
-        if (y > center[1] + 100 && y < center[1] + 150) {
+        if (y > center[1] + 150 && y < center[1] + 100) {
             return 3;
         }
     }

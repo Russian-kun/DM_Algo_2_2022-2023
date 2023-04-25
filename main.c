@@ -8,15 +8,20 @@ int main(int argc, char* argv[]) {
     int puis = 9;
     int W = pow(2, puis), wmin = 2, kp = 2;
     MLV_create_window("Quadtree", "Quadtree", W, W);
+    MLV_Keyboard_button but;
     while (ret == 0) {
         MLV_clear_window(MLV_COLOR_BLACK);
         afficherMenu(placement, W, W);
         MLV_actualise_window();
         MLV_update_window();
-        MLV_wait_mouse(&clicx, &clicy);
+        MLV_wait_keyboard_or_mouse(&but, NULL, NULL, &clicx, &clicy);
+        // MLV_wait_mouse(&clicx, &clicy);
         ret = clicMenu(clicx, clicy);
         if (ret == 2) {
             placement = (placement + 1) % 2;
+        }
+        if (but == MLV_KEYBOARD_ESCAPE) {
+            ret = 3;
         }
     }
     if (ret == 3) {
@@ -28,23 +33,25 @@ int main(int argc, char* argv[]) {
     Cell* lstCell = NULL;
     srand(time(NULL));
     Quadtree qt = initQuadtree(W, wmin);
-    Particle* p = generateParticles(nbp, &lstCell, W);
-    addParticlesQuadtree(qt, p, lstCell, nbp, kp);
+    if (placement) {
+        Particle* p = generateParticles(nbp, &lstCell, W);
+        addParticlesQuadtree(qt, p, lstCell, nbp, kp);
 
-    MLV_clear_window(MLV_COLOR_BLACK);
-    for (int i = 0; i < nbp; i++) {
-        afficherParticle(p[i]);
+        MLV_clear_window(MLV_COLOR_BLACK);
+        for (int i = 0; i < nbp; i++) {
+            afficherParticle(p[i]);
+        }
+        afficherQuadtree(qt, W, wmin);
+        free(p);
     }
-    afficherQuadtree(qt, W, wmin);
 
     MLV_actualise_window();
     MLV_update_window();
-    MLV_wait_event(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    MLV_wait_keyboard_or_mouse(NULL, NULL, NULL, NULL, NULL);
 
     MLV_free_window();
 
     freeQuadtree(qt);
-    free(p);
     free(lstCell);
     return 0;
 }
