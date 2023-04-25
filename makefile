@@ -18,6 +18,8 @@ Quadtree.o: Quadtree.c Quadtree.h Cell.o
 Cell.o: Cell.c Cell.h
 	$(COMP) $(COMP_FLAGS) -c Cell.c
 
+docs: Doxyfile
+	doxygen Doxyfile
 
 clean:
 	for file in $(FILES); do \
