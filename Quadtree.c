@@ -17,10 +17,14 @@ int isLeaf(Quadtree qt) {
  * @param p
  * @return int
  */
-int isInPlist(Quadtree qt, Particle* p) {
+int isInPlist(Quadtree qt, Cell* cellule) {
     Cell* cell = qt->plist;
     while (cell != NULL) {
-        if (cell->p == p) {
+        if (cell == cellule) {
+            return 1;
+        }
+        if (cell == cell->next) {
+            printf("erreur de chainage : cell == cell->next\n");
             return 1;
         }
         cell = cell->next;
@@ -110,6 +114,13 @@ void split(Quadtree qt, int kp) {
     }
 }
 
+/**
+ * @brief Ajoute une particule dans un quadtree
+ *
+ * @param qt
+ * @param cell
+ * @param kp
+ */
 void addParticle(Quadtree qt, Cell* cell, int kp) {
     // Ajouter la particule dans la liste de cellules de la feuille
     Cell* newCell = cell;
@@ -227,9 +238,138 @@ Particle* generateParticles(int nbp, Cell** cell, int W) {
     return particules;
 }
 
-void addParticlesQuadtree(Quadtree qt, Particle* p, Cell* cell, int nbp, int kp) {
+/**
+ * @brief Ajoute un tableau de particules dans un quadtree
+ *
+ * @param qt
+ * @param p
+ * @param cell
+ * @param nbp
+ * @param kp
+ */
+void addParticlesQuadtree(Quadtree qt, Cell* cell, int nbp, int kp) {
     int i;
     for (i = 0; i < nbp; i++) {
         addParticle(qt, &cell[i], kp);
     }
+}
+
+int RemoveFromQuadtree(Quadtree* qt, Cell* cellule) {
+    Cell* cell = (*qt)->plist;
+    Cell* prev = NULL;
+    while (cell != NULL) {
+        if (cell == cellule) {
+            if (prev == NULL) {
+                (*qt)->plist = cell->next;
+            } else {
+                prev->next = cell->next;
+            }
+            (*qt)->nbp--;
+            return 1;
+        }
+        prev = cell;
+        cell = cell->next;
+    }
+    return 0;
+}
+
+Quadtree* FindContainingQuadtree(Quadtree* qt, Cell* cellule) {
+    if (isInPlist(*qt, cellule)) {
+        return qt;
+    }
+    if (isInQuadtree((*qt)->nw, cellule->p)) {
+        Quadtree* tmp = FindContainingQuadtree(&(*qt)->nw, cellule);
+        if (tmp != NULL) {
+            return tmp;
+        }
+    }
+    if (isInQuadtree((*qt)->ne, cellule->p)) {
+        Quadtree* tmp = FindContainingQuadtree(&(*qt)->ne, cellule);
+        if (tmp != NULL) {
+            return tmp;
+        }
+    }
+    if (isInQuadtree((*qt)->sw, cellule->p)) {
+        Quadtree* tmp = FindContainingQuadtree(&(*qt)->sw, cellule);
+        if (tmp != NULL) {
+            return tmp;
+        }
+    }
+    if (isInQuadtree((*qt)->se, cellule->p)) {
+        Quadtree* tmp = FindContainingQuadtree(&(*qt)->se, cellule);
+        if (tmp != NULL) {
+            return tmp;
+        }
+    }
+    return NULL;
+}
+
+int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
+    if (isInPlist(*qt, cellule)) {
+        RemoveFromQuadtree(qt, cellule);
+        return 1;
+    }
+    if (isInQuadtree((*qt)->nw, cellule->p)) {
+        int tmp = FindAndRemoveCell(&(*qt)->nw, cellule, kp);
+        if (tmp != 0) {
+            (*qt)->nbp--;
+            if ((*qt)->nbp < kp) {
+                updateQuadtree(qt, cellule, kp);
+            }
+            return tmp;
+        }
+    } else if (isInQuadtree((*qt)->ne, cellule->p)) {
+        int tmp = FindAndRemoveCell(&(*qt)->ne, cellule, kp);
+        if (tmp != 0) {
+            (*qt)->nbp--;
+            if ((*qt)->nbp < kp) {
+                updateQuadtree(qt, cellule, kp);
+            }
+            return tmp;
+        }
+    } else if (isInQuadtree((*qt)->sw, cellule->p)) {
+        int tmp = FindAndRemoveCell(&(*qt)->sw, cellule, kp);
+        if (tmp != 0) {
+            (*qt)->nbp--;
+            if ((*qt)->nbp < kp) {
+                updateQuadtree(qt, cellule, kp);
+            }
+            return tmp;
+        }
+    } else if (isInQuadtree((*qt)->se, cellule->p)) {
+        int tmp = FindAndRemoveCell(&(*qt)->se, cellule, kp);
+        if (tmp != 0) {
+            (*qt)->nbp--;
+            if ((*qt)->nbp < kp) {
+                updateQuadtree(qt, cellule, kp);
+            }
+            return tmp;
+        }
+    }
+    return 0;
+}
+
+void updateQuadtree(Quadtree* qt, Cell* cellule, int kp) {
+    Quadtree* fils[4] = {&(*qt)->nw, &(*qt)->ne, &(*qt)->sw, &(*qt)->se};
+    int i = 0;
+    for (i = 0; i < 4; i++) {
+        if ((*fils[i])->nbp == 0)
+            continue;
+        Cell* last = getLastCell((*qt)->plist);
+        if (last != NULL)
+            last->next = (*fils[i])->plist;
+        else
+            (*qt)->plist = (*fils[i])->plist;
+        (*fils[i])->plist = NULL;
+        (*fils[i])->nbp = 0;
+    }
+}
+
+Cell* getLastCell(Cell* cell) {
+    if (cell == NULL)
+        return NULL;
+    while (cell->next != NULL) {
+        cell = cell->next;
+    }
+    return cell;
 }

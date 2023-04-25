@@ -34,9 +34,10 @@ int main(int argc, char* argv[]) {
     Cell* lstCell = NULL;
     srand(time(NULL));
     Quadtree qt = initQuadtree(W, wmin);
+    Particle* p = generateParticles(nbp, &lstCell, W);
+    // Generation aleatoire
     if (placement) {
-        Particle* p = generateParticles(nbp, &lstCell, W);
-        addParticlesQuadtree(qt, p, lstCell, nbp, kp);
+        addParticlesQuadtree(qt, lstCell, nbp, kp);
 
         MLV_clear_window(MLV_COLOR_BLACK);
         for (int i = 0; i < nbp; i++) {
@@ -44,6 +45,39 @@ int main(int argc, char* argv[]) {
         }
         afficherQuadtree(qt, W, wmin);
         free(p);
+    }
+    // Placement Manuel
+    else {
+        int curr_part = 0;
+        while (curr_part < nbp) {
+            MLV_clear_window(MLV_COLOR_BLACK);
+            for (int i = 0; i < curr_part; i++) {
+                afficherParticle(p[i]);
+                MLV_actualise_window();
+            }
+            afficherQuadtree(qt, W, wmin);
+            MLV_actualise_window();
+            MLV_update_window();
+            MLV_wait_keyboard_or_mouse(&but, NULL, NULL, &clicx, &clicy);
+            if (MLV_get_mouse_button_state(MLV_BUTTON_LEFT) == MLV_PRESSED) {
+                p[curr_part].x = clicx;
+                p[curr_part].y = clicy;
+                addParticle(qt, &lstCell[curr_part], kp);
+                curr_part++;
+            } else if (but == MLV_KEYBOARD_ESCAPE) {
+                curr_part = nbp;
+            } else if (but == MLV_KEYBOARD_BACKSPACE) {
+                if (curr_part > 0) {
+                    ret = FindAndRemoveCell(&qt, &lstCell[curr_part - 1], kp);
+                    curr_part--;
+                }
+            } else if (but == MLV_KEYBOARD_r) {
+                p[curr_part].x = rand() % W;
+                p[curr_part].y = rand() % W;
+                addParticle(qt, &lstCell[curr_part], kp);
+                curr_part++;
+            }
+        }
     }
 
     MLV_actualise_window();

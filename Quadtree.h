@@ -58,12 +58,11 @@ Particle *generateParticles(int nbp, Cell **lst, int W);
  * @brief Ajoute des particules dans un quadtree
  *
  * @param qt Quadtree
- * @param p Tableau de particules
  * @param cell Tableau de cellules
  * @param nbp Nombre de particules
  * @param kp Nombre maximal de particules dans une feuille
  */
-void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp);
+void addParticlesQuadtree(Quadtree qt, Cell *cell, int nbp, int kp);
 
 /**
  * @brief Ajoute une particule dans un quadtree
@@ -73,5 +72,15 @@ void addParticlesQuadtree(Quadtree qt, Particle *p, Cell *cell, int nbp, int kp)
  * @param kp
  */
 void addParticle(Quadtree qtree, Cell *cell, int kp);
+
+Quadtree *FindContainingQuadtree(Quadtree *qt, Cell *cellule);
+
+int RemoveFromQuadtree(Quadtree *qt, Cell *cellule);
+
+int FindAndRemoveCell(Quadtree *qt, Cell *cellule, int kp);
+
+void updateQuadtree(Quadtree *qt, Cell *cellule, int kp);
+
+Cell *getLastCell(Cell *cell);
 
 #endif
