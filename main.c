@@ -19,7 +19,6 @@ int main(int argc, char* argv[]) {
         MLV_actualise_window();
         MLV_update_window();
         MLV_wait_keyboard_or_mouse(&but, NULL, NULL, &clicx, &clicy);
-        // MLV_wait_mouse(&clicx, &clicy);
         ret = clicMenu(clicx, clicy);
         if (ret == 2) {
             placement = (placement + 1) % 2;

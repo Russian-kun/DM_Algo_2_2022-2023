@@ -300,7 +300,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                FusionneFeuilles(qt, cellule, kp);
+                FusionneFeuilles(qt);
             }
             return tmp;
         }
@@ -309,7 +309,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                FusionneFeuilles(qt, cellule, kp);
+                FusionneFeuilles(qt);
             }
             return tmp;
         }
@@ -318,7 +318,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                FusionneFeuilles(qt, cellule, kp);
+                FusionneFeuilles(qt);
             }
             return tmp;
         }
@@ -327,7 +327,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                FusionneFeuilles(qt, cellule, kp);
+                FusionneFeuilles(qt);
             }
             return tmp;
         }
@@ -335,15 +335,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
     return 0;
 }
 
-/**
- * @brief Met à jour un quadtree en fusionnant les feuilles
- * dans le père
- *
- * @param qt
- * @param cellule
- * @param kp
- */
-void FusionneFeuilles(Quadtree* qt, Cell* cellule, int kp) {
+void FusionneFeuilles(Quadtree* qt) {
     Quadtree* fils[4] = {&(*qt)->nw, &(*qt)->ne, &(*qt)->sw, &(*qt)->se};
     int i = 0;
     for (i = 0; i < 4; i++) {

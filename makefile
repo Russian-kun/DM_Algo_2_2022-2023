@@ -18,7 +18,7 @@ Quadtree.o: Quadtree.c Quadtree.h Cell.o
 Cell.o: Cell.c Cell.h
 	$(COMP) $(COMP_FLAGS) -c Cell.c
 
-docs: Doxyfile
+docs: Doxyfile *.c *.h
 	doxygen Doxyfile
 
 clean:
@@ -27,3 +27,6 @@ clean:
 			rm $$file; \
 		fi; \
 	done
+	if [ -d docs ]; then \
+		rm -r docs; \
+	fi

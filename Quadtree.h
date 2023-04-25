@@ -41,18 +41,39 @@ void addParticlesQuadtree(Quadtree qt, Cell *cell, int nbp, int kp);
 /**
  * @brief Ajoute une particule dans un quadtree
  *
- * @param qtree
- * @param cell
- * @param kp
+ * @param qtree Quadtree
+ * @param cell Cellule à ajouter
+ * @param kp Nombre maximal de particules dans une feuille
  */
 void addParticle(Quadtree qtree, Cell *cell, int kp);
 
 // Quadtree *FindContainingQuadtree(Quadtree *qt, Cell *cellule);
 
+/**
+ * @brief Retire une cellule du quadtree
+ *
+ * @param qt Quadtree
+ * @param cellule Cellule à retirer
+ * @return int
+ */
 int RemoveFromQuadtree(Quadtree *qt, Cell *cellule);
 
+/**
+ * @brief Cherche une cellule dans le quadtree et ses fils et la retire
+ * si elle est trouvée. Retourne 1 si la cellule a été trouvée, 0 sinon.
+ *
+ * @param qt Quadtree
+ * @param cellule Cellule à chercher
+ * @param kp Nombre maximal de particules dans une feuille
+ * @return int
+ */
 int FindAndRemoveCell(Quadtree *qt, Cell *cellule, int kp);
 
-void FusionneFeuilles(Quadtree *qt, Cell *cellule, int kp);
+/**
+ * @brief Fusionne les fils du quadtree
+ *
+ * @param qt Quadtree
+ */
+void FusionneFeuilles(Quadtree *qt);
 
 #endif
