@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
         ret = clicMenu(clicx, clicy);
         if (ret == 2) {
             placement = (placement + 1) % 2;
+            ret = 0;
         }
         if (but == MLV_KEYBOARD_ESCAPE) {
             ret = 3;
