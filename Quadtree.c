@@ -1,35 +1,101 @@
 #include "Quadtree.h"
 
-/**
- * @brief Verifie si un quadtree est une feuille
- *
- * @param qt
- * @return int
- */
-int isLeaf(Quadtree qt) {
-    return qt->plist != NULL;
-}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 /**
- * @brief Verifie si une particule est dans la liste chaînée d'un quadtree
+ * @brief Sous-fonction de initQuadtree
  *
- * @param qt
- * @param p
- * @return int
+ * @param node Pointeur vers le nœud courant
+ * @param wmin Résolution minimale
+ * @param niveau Niveau courant
+ * @param position Position du nœud courant
  */
-int isInPlist(Quadtree qt, Cell* cellule) {
-    Cell* cell = qt->plist;
-    while (cell != NULL) {
-        if (cell == cellule) {
-            return 1;
-        }
-        if (cell == cell->next) {
-            printf("erreur de chainage : cell == cell->next\n");
-            return 1;
-        }
-        cell = cell->next;
+void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
+    // Si la résolution minimale est atteinte, on arrête la récursion
+    if (node->width <= wmin) {
+        return;
     }
-    return 0;
+
+    // Calcul des coordonnées et des dimensions des sous-zones
+    int x = node->x;
+    int y = node->y;
+    int width = node->width / 2;
+    int height = width;
+    // Position correspond a la position du pere
+
+    // Calcul du nombre de frères
+    int nb_frere = pow(4, niveau);
+    // Calcul de la position du premier fils
+    int pos_premier_fils = nb_frere * 4 / 3;
+    // Calcul de la position du premier frère
+    int pos_premier_frere = nb_frere / 3;
+    // Calcul de la position du frère
+    int distance_frere = position - pos_premier_frere;
+
+    int pos_actuelle = pos_premier_fils + distance_frere * 4;
+
+    int new_pos = pos_actuelle;
+
+    // Initialisation des fils nord-ouest, nord-est, sud-ouest et sud-est
+    node->nw = &node[new_pos];
+    node->nw->x = x;
+    node->nw->y = y;
+    node->nw->width = width;
+    node->nw->height = height;
+    node->nw->nbp = 0;
+    initQuadtreeRec(node->nw, wmin, niveau + 1, new_pos);
+
+    node->ne = node->nw + 1;
+    node->ne->x = x + width;
+    node->ne->y = y;
+    node->ne->width = width;
+    node->ne->height = height;
+    node->ne->nbp = 0;
+    initQuadtreeRec(node->ne, wmin, niveau + 1, new_pos + 1);
+
+    node->sw = node->ne + 1;
+    node->sw->x = x;
+    node->sw->y = y + height;
+    node->sw->width = width;
+    node->sw->height = height;
+    node->sw->nbp = 0;
+    initQuadtreeRec(node->sw, wmin, niveau + 1, new_pos + 2);
+
+    node->se = node->sw + 1;
+    node->se->x = x + width;
+    node->se->y = y + height;
+    node->se->width = width;
+    node->se->height = height;
+    node->se->nbp = 0;
+    initQuadtreeRec(node->se, wmin, niveau + 1, new_pos + 3);
+}
+
+Quadtree initQuadtree(int W, int wmin) {
+    // Allocation du tableau de noeuds
+    // int tmp = pow(4, log2(W));
+    int nbNodes = pow(4, log2(W) + 1);  // W * W * 4;
+    Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
+
+    // Initialisation de la racine
+    Noeud* root = &quadtree[0];
+    root->x = 0;
+    root->y = 0;
+    root->width = W;
+    root->height = W;
+    root->nbp = 0;
+    root->plist = NULL;
+
+    // Initialisation récursive des fils
+    initQuadtreeRec(root, wmin, 0, 1);
+
+    return quadtree;
+}
+
+void freeQuadtree(Quadtree qt) {
+    free(qt);
 }
 
 /**
@@ -134,108 +200,25 @@ void addParticle(Quadtree qt, Cell* cell, int kp) {
 }
 
 /**
- * @brief Sous-fonction de initQuadtree
+ * @brief Verifie si une particule est dans la liste chaînée d'un quadtree
  *
- * @param node Pointeur vers le nœud courant
- * @param wmin Résolution minimale
- * @param niveau Niveau courant
- * @param position Position du nœud courant
+ * @param qt
+ * @param p
+ * @return int
  */
-void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
-    // Si la résolution minimale est atteinte, on arrête la récursion
-    if (node->width <= wmin) {
-        return;
+int isInPlist(Quadtree qt, Cell* cellule) {
+    Cell* cell = qt->plist;
+    while (cell != NULL) {
+        if (cell == cellule) {
+            return 1;
+        }
+        if (cell == cell->next) {
+            printf("erreur de chainage : cell == cell->next\n");
+            return 1;
+        }
+        cell = cell->next;
     }
-
-    // Calcul des coordonnées et des dimensions des sous-zones
-    int x = node->x;
-    int y = node->y;
-    int width = node->width / 2;
-    int height = width;
-    // Position correspond a la position du pere
-
-    // Calcul du nombre de frères
-    int nb_frere = pow(4, niveau);
-    // Calcul de la position du premier fils
-    int pos_premier_fils = nb_frere * 4 / 3;
-    // Calcul de la position du premier frère
-    int pos_premier_frere = nb_frere / 3;
-    // Calcul de la position du frère
-    int distance_frere = position - pos_premier_frere;
-
-    int pos_actuelle = pos_premier_fils + distance_frere * 4;
-
-    int new_pos = pos_actuelle;
-
-    // Initialisation des fils nord-ouest, nord-est, sud-ouest et sud-est
-    node->nw = &node[new_pos];
-    node->nw->x = x;
-    node->nw->y = y;
-    node->nw->width = width;
-    node->nw->height = height;
-    node->nw->nbp = 0;
-    initQuadtreeRec(node->nw, wmin, niveau + 1, new_pos);
-
-    node->ne = node->nw + 1;
-    node->ne->x = x + width;
-    node->ne->y = y;
-    node->ne->width = width;
-    node->ne->height = height;
-    node->ne->nbp = 0;
-    initQuadtreeRec(node->ne, wmin, niveau + 1, new_pos + 1);
-
-    node->sw = node->ne + 1;
-    node->sw->x = x;
-    node->sw->y = y + height;
-    node->sw->width = width;
-    node->sw->height = height;
-    node->sw->nbp = 0;
-    initQuadtreeRec(node->sw, wmin, niveau + 1, new_pos + 2);
-
-    node->se = node->sw + 1;
-    node->se->x = x + width;
-    node->se->y = y + height;
-    node->se->width = width;
-    node->se->height = height;
-    node->se->nbp = 0;
-    initQuadtreeRec(node->se, wmin, niveau + 1, new_pos + 3);
-}
-
-Quadtree initQuadtree(int W, int wmin) {
-    // Allocation du tableau de noeuds
-    // int tmp = pow(4, log2(W));
-    int nbNodes = pow(4, log2(W) + 1);  // W * W * 4;
-    Quadtree quadtree = calloc(nbNodes, sizeof(Noeud));
-
-    // Initialisation de la racine
-    Noeud* root = &quadtree[0];
-    root->x = 0;
-    root->y = 0;
-    root->width = W;
-    root->height = W;
-    root->nbp = 0;
-    root->plist = NULL;
-
-    // Initialisation récursive des fils
-    initQuadtreeRec(root, wmin, 0, 1);
-
-    return quadtree;
-}
-
-void freeQuadtree(Quadtree qt) {
-    free(qt);
-}
-
-Particle* generateParticles(int nbp, Cell** cell, int W) {
-    Particle* particules = (Particle*)malloc(nbp * sizeof(Particle));
-    *cell = calloc(nbp, sizeof(Cell));
-    for (int i = 0; i < nbp; i++) {
-        int x = rand() % W;
-        int y = rand() % W;
-        particules[i] = (Particle){x, y, 0, 0};
-        (*cell)[i] = (Cell){&particules[i], NULL};
-    }
-    return particules;
+    return 0;
 }
 
 /**
@@ -273,36 +256,36 @@ int RemoveFromQuadtree(Quadtree* qt, Cell* cellule) {
     return 0;
 }
 
-Quadtree* FindContainingQuadtree(Quadtree* qt, Cell* cellule) {
-    if (isInPlist(*qt, cellule)) {
-        return qt;
-    }
-    if (isInQuadtree((*qt)->nw, cellule->p)) {
-        Quadtree* tmp = FindContainingQuadtree(&(*qt)->nw, cellule);
-        if (tmp != NULL) {
-            return tmp;
-        }
-    }
-    if (isInQuadtree((*qt)->ne, cellule->p)) {
-        Quadtree* tmp = FindContainingQuadtree(&(*qt)->ne, cellule);
-        if (tmp != NULL) {
-            return tmp;
-        }
-    }
-    if (isInQuadtree((*qt)->sw, cellule->p)) {
-        Quadtree* tmp = FindContainingQuadtree(&(*qt)->sw, cellule);
-        if (tmp != NULL) {
-            return tmp;
-        }
-    }
-    if (isInQuadtree((*qt)->se, cellule->p)) {
-        Quadtree* tmp = FindContainingQuadtree(&(*qt)->se, cellule);
-        if (tmp != NULL) {
-            return tmp;
-        }
-    }
-    return NULL;
-}
+// Quadtree* FindContainingQuadtree(Quadtree* qt, Cell* cellule) {
+//     if (isInPlist(*qt, cellule)) {
+//         return qt;
+//     }
+//     if (isInQuadtree((*qt)->nw, cellule->p)) {
+//         Quadtree* tmp = FindContainingQuadtree(&(*qt)->nw, cellule);
+//         if (tmp != NULL) {
+//             return tmp;
+//         }
+//     }
+//     if (isInQuadtree((*qt)->ne, cellule->p)) {
+//         Quadtree* tmp = FindContainingQuadtree(&(*qt)->ne, cellule);
+//         if (tmp != NULL) {
+//             return tmp;
+//         }
+//     }
+//     if (isInQuadtree((*qt)->sw, cellule->p)) {
+//         Quadtree* tmp = FindContainingQuadtree(&(*qt)->sw, cellule);
+//         if (tmp != NULL) {
+//             return tmp;
+//         }
+//     }
+//     if (isInQuadtree((*qt)->se, cellule->p)) {
+//         Quadtree* tmp = FindContainingQuadtree(&(*qt)->se, cellule);
+//         if (tmp != NULL) {
+//             return tmp;
+//         }
+//     }
+//     return NULL;
+// }
 
 int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
     if (isInPlist(*qt, cellule)) {
@@ -314,7 +297,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                updateQuadtree(qt, cellule, kp);
+                FusionneFeuilles(qt, cellule, kp);
             }
             return tmp;
         }
@@ -323,7 +306,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                updateQuadtree(qt, cellule, kp);
+                FusionneFeuilles(qt, cellule, kp);
             }
             return tmp;
         }
@@ -332,7 +315,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                updateQuadtree(qt, cellule, kp);
+                FusionneFeuilles(qt, cellule, kp);
             }
             return tmp;
         }
@@ -341,7 +324,7 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
         if (tmp != 0) {
             (*qt)->nbp--;
             if ((*qt)->nbp < kp) {
-                updateQuadtree(qt, cellule, kp);
+                FusionneFeuilles(qt, cellule, kp);
             }
             return tmp;
         }
@@ -349,7 +332,15 @@ int FindAndRemoveCell(Quadtree* qt, Cell* cellule, int kp) {
     return 0;
 }
 
-void updateQuadtree(Quadtree* qt, Cell* cellule, int kp) {
+/**
+ * @brief Met à jour un quadtree en fusionnant les feuilles
+ * dans le père
+ *
+ * @param qt
+ * @param cellule
+ * @param kp
+ */
+void FusionneFeuilles(Quadtree* qt, Cell* cellule, int kp) {
     Quadtree* fils[4] = {&(*qt)->nw, &(*qt)->ne, &(*qt)->sw, &(*qt)->se};
     int i = 0;
     for (i = 0; i < 4; i++) {
@@ -363,13 +354,4 @@ void updateQuadtree(Quadtree* qt, Cell* cellule, int kp) {
         (*fils[i])->plist = NULL;
         (*fils[i])->nbp = 0;
     }
-}
-
-Cell* getLastCell(Cell* cell) {
-    if (cell == NULL)
-        return NULL;
-    while (cell->next != NULL) {
-        cell = cell->next;
-    }
-    return cell;
 }

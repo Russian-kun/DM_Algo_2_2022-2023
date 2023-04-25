@@ -1,4 +1,5 @@
 #include "affichage.h"
+#include "MLV/MLV_all.h"
 
 /**
  * @brief Sous-fonction récursive d'affichage d'un quadtree

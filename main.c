@@ -1,6 +1,8 @@
 #include "Quadtree.h"
 #include "affichage.h"
+#include "MLV/MLV_all.h"
 #include <time.h>
+#include <math.h>
 
 // TODO placement a la souris (loop click, menu avec option de generation, touche pour quitter)
 int main(int argc, char* argv[]) {

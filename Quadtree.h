@@ -1,22 +1,7 @@
 #ifndef QUADTREE_H
 #define QUADTREE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
-/// @brief Structure de particule
-typedef struct _particule_t {
-    int x, y;    // coordonnée y de la particule
-    int vx, vy;  // vitesse en y de la particule
-} Particle;
-
-/// @brief Structure de cellule de liste chaînée
-typedef struct _cell_ {
-    Particle *p;          // pointeur vers la particule
-    struct _cell_ *next;  // pointeur vers la cellule suivante dans la liste
-} Cell;
+#include "Cell.h"
 
 /// @brief Structure de nœud de quadtree
 typedef struct _noeud_ {
@@ -44,17 +29,6 @@ Quadtree initQuadtree(int W, int wmin);
 void freeQuadtree(Quadtree qt);
 
 /**
- * @brief Génère un tableau de particule ainsi que les cellule d'une
- * liste chaînée de particules
- *
- * @param nbp Nombre de particules
- * @param lst Pointeur vers la liste chaînée de cellules
- * @param W Cote du carre
- * @return Particle*
- */
-Particle *generateParticles(int nbp, Cell **lst, int W);
-
-/**
  * @brief Ajoute des particules dans un quadtree
  *
  * @param qt Quadtree
@@ -73,14 +47,12 @@ void addParticlesQuadtree(Quadtree qt, Cell *cell, int nbp, int kp);
  */
 void addParticle(Quadtree qtree, Cell *cell, int kp);
 
-Quadtree *FindContainingQuadtree(Quadtree *qt, Cell *cellule);
+// Quadtree *FindContainingQuadtree(Quadtree *qt, Cell *cellule);
 
 int RemoveFromQuadtree(Quadtree *qt, Cell *cellule);
 
 int FindAndRemoveCell(Quadtree *qt, Cell *cellule, int kp);
 
-void updateQuadtree(Quadtree *qt, Cell *cellule, int kp);
-
-Cell *getLastCell(Cell *cell);
+void FusionneFeuilles(Quadtree *qt, Cell *cellule, int kp);
 
 #endif
