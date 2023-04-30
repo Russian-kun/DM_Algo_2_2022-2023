@@ -1,20 +1,36 @@
+#include "param.h"
 #include "Quadtree.h"
 #include "affichage.h"
 #include "MLV/MLV_all.h"
 #include <time.h>
 #include <math.h>
 
+// TODO Faire un menu propre
 int main(int argc, char* argv[]) {
-    int ret = 0, placement = 0;
-    int clicx, clicy;
-    // Nombre de particules
     int nbp = 200;
     int puis = 9;
     int W = pow(2, puis), wmin = 2, kp = 2;
+
+    int help = 0;
+    interpretParam(argc, argv, &nbp, &help, W, wmin, kp);
+    if (help) {
+        printf("Usage: ./main [OPTIONS]\n");
+        printf("Options:\n");
+        printf("  -h - help\n");
+        printf("  -n[VALEUR] - nombre de particules\n");
+        printf("  -W[VALEUR] - taille de la fenetre\n");
+        printf("  -w[VALEUR] - taille minimale d'une cellule\n");
+        printf("  -k[VALEUR] - nombre de particules maximales dans une feuille\n");
+        return 0;
+    }
+
+    int ret = 0, placement = 0;
+    int clicx, clicy;
+    // Nombre de particules
     MLV_create_window("Quadtree", "Quadtree", W, W);
     MLV_Keyboard_button but;
     while (ret == 0) {
-        MLV_clear_window(MLV_COLOR_BLACK);
+        MLV_clear_window(MLV_COLOR_GRAY22);
         afficherMenu(placement, W, W);
         MLV_actualise_window();
         MLV_update_window();
