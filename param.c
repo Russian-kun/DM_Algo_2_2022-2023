@@ -2,12 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+/// @brief Structure de dictionnaire
 typedef struct _dict {
     int size, maxsize;
     char** values;
     char** keys;
 } dict, *Dict;
 
+/**
+ * @brief Cree un nouveau dictionnaire
+ *
+ * @return Dict
+ */
 static Dict newDict() {
     Dict dict = (Dict)malloc(sizeof(dict));
     dict->size = 0;
@@ -17,12 +23,24 @@ static Dict newDict() {
     return dict;
 }
 
+/**
+ * @brief Libere la memoire allouee par un dictionnaire
+ *
+ * @param dict
+ */
 static void freeDict(Dict dict) {
     free(dict->keys);
     free(dict->values);
     free(dict);
 }
 
+/**
+ * @brief Ajoute une valeur au dictionnaire
+ *
+ * @param dict
+ * @param key
+ * @param value
+ */
 static void dictSet(Dict dict, char* key, char* value) {
     int i;
     for (i = 0; i < dict->size; i++) {
@@ -41,6 +59,13 @@ static void dictSet(Dict dict, char* key, char* value) {
     dict->size++;
 }
 
+/**
+ * @brief Lit les parametres de la ligne de commande et les stocke dans un dictionnaire
+ *
+ * @param argv
+ * @param argc
+ * @return Dict
+ */
 static Dict readParams(int argv, char* argc[]) {
     Dict dict = newDict();
     for (int i = 1; i < argv; i++) {
@@ -54,6 +79,13 @@ static Dict readParams(int argv, char* argc[]) {
     return dict;
 }
 
+/**
+ * @brief Recupere une valeur du dictionnaire
+ *
+ * @param dict
+ * @param key
+ * @return char*
+ */
 static char* dictGet(Dict dict, char* key) {
     for (int i = 0; i < dict->size; i++) {
         if (strcmp(dict->keys[i], key) == 0) {
@@ -63,6 +95,17 @@ static char* dictGet(Dict dict, char* key) {
     return NULL;
 }
 
+/**
+ * @brief Interprete les paramètres de la ligne de commande
+ *
+ * @param argc
+ * @param argv
+ * @param nbp
+ * @param help
+ * @param W
+ * @param wmin
+ * @param kp
+ */
 void interpretParam(int argc, char* argv[], int* nbp, int* help, int W, int wmin, int kp) {
     Dict dict = readParams(argc, argv);
 
