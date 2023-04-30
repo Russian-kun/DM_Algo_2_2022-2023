@@ -13,7 +13,7 @@
  * @param niveau Niveau courant
  * @param position Position du nœud courant
  */
-void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
+static void initQuadtreeRec(Noeud* node, int wmin, int niveau, int position) {
     // Si la résolution minimale est atteinte, on arrête la récursion
     if (node->width <= wmin) {
         return;
@@ -104,7 +104,7 @@ void freeQuadtree(Quadtree qt) {
  * @param kp Nombre de particules maximum par nœud
  * @return int
  */
-int sature(Quadtree qt, int kp) {
+static int sature(Quadtree qt, int kp) {
     return qt->nbp >= kp;
 }
 
@@ -116,7 +116,7 @@ int sature(Quadtree qt, int kp) {
  * @param p Pointeur vers la particule
  * @return int
  */
-int isInQuadtree(Quadtree qt, Particle* p) {
+static int isInQuadtree(Quadtree qt, Particle* p) {
     if (qt == NULL) return 0;
     return p->x >= qt->x && p->x < qt->x + qt->width && p->y >= qt->y && p->y < qt->y + qt->height;
 }
@@ -127,7 +127,7 @@ int isInQuadtree(Quadtree qt, Particle* p) {
  * @param qt Pointeur vers le nœud courant
  * @param kp Nombre de particules maximum par nœud
  */
-void split(Quadtree qt, int kp) {
+static void split(Quadtree qt, int kp) {
     if (qt->nw == NULL || qt->ne == NULL || qt->sw == NULL || qt->se == NULL)
         return;
     Cell* cell = qt->plist;
@@ -203,7 +203,7 @@ void addParticle(Quadtree qt, Cell* cell, int kp) {
  * @param p
  * @return int
  */
-int isInPlist(Quadtree qt, Cell* cellule) {
+static int isInPlist(Quadtree qt, Cell* cellule) {
     Cell* cell = qt->plist;
     while (cell != NULL) {
         if (cell == cellule) {
