@@ -5,7 +5,6 @@
 #include <time.h>
 #include <math.h>
 
-// TODO Faire un menu propre
 int main(int argc, char* argv[]) {
     int nbp = 200;
     int puis = 9;
